@@ -113,7 +113,7 @@ public class ReminderAddActivity extends AppCompatActivity implements
         mMonth = mCalendar.get(Calendar.MONTH) + 1;
         mDay = mCalendar.get(Calendar.DATE);
 
-        mDate = mDay + "/" + mMonth + "/" + mYear;
+        mDate =  mMonth + "/" + mDay + "/" + mYear;
         mTime = mHour + ":" + mMinute;
 
         // Setup Reminder Title EditText
