@@ -20,6 +20,7 @@ package com.blanyal.remindme;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,15 +51,16 @@ public class ReminderEditActivity extends AppCompatActivity implements
     private Toolbar mToolbar;
     private EditText mTitleText;
     private TextView mDateText, mTimeText, mRepeatText, mRepeatNoText, mRepeatTypeText;
-    private FloatingActionButton mFAB1;
-    private FloatingActionButton mFAB2;
+    private FloatingActionButton mStar;
+    private RelativeLayout mRepeatNum;
+    private RelativeLayout mRepeatTyp;
     private Switch mRepeatSwitch;
     private String mTitle;
     private String mTime;
     private String mDate;
     private String mRepeatNo;
     private String mRepeatType;
-    private String mActive;
+    private Boolean mActive;
     private String mRepeat;
     private String[] mDateSplit;
     private String[] mTimeSplit;
@@ -102,9 +105,10 @@ public class ReminderEditActivity extends AppCompatActivity implements
         mRepeatText = (TextView) findViewById(R.id.set_repeat);
         mRepeatNoText = (TextView) findViewById(R.id.set_repeat_no);
         mRepeatTypeText = (TextView) findViewById(R.id.set_repeat_type);
-        mFAB1 = (FloatingActionButton) findViewById(R.id.starred1);
-        mFAB2 = (FloatingActionButton) findViewById(R.id.starred2);
+        mStar = (FloatingActionButton) findViewById(R.id.starred);
         mRepeatSwitch = (Switch) findViewById(R.id.repeat_switch);
+        mRepeatNum = (RelativeLayout) findViewById(R.id.RepeatNo);
+        mRepeatTyp = (RelativeLayout) findViewById(R.id.RepeatType);
 
         // Setup Toolbar
         setSupportActionBar(mToolbar);
@@ -141,7 +145,7 @@ public class ReminderEditActivity extends AppCompatActivity implements
         mRepeat = mReceivedReminder.getRepeat();
         mRepeatNo = mReceivedReminder.getRepeatNo();
         mRepeatType = mReceivedReminder.getRepeatType();
-        mActive = mReceivedReminder.getActive();
+        mActive = Boolean.valueOf(mReceivedReminder.getActive());
 
         // Setup TextViews using reminder values
         mTitleText.setText(mTitle);
@@ -177,26 +181,27 @@ public class ReminderEditActivity extends AppCompatActivity implements
             mRepeatTypeText.setText(savedRepeatType);
             mRepeatType = savedRepeatType;
 
-            mActive = savedInstanceState.getString(KEY_ACTIVE);
+            mActive = Boolean.valueOf(savedInstanceState.getString(KEY_ACTIVE));
         }
 
         // Setup up active buttons
-        if (mActive.equals("false")) {
-            mFAB1.setVisibility(View.VISIBLE);
-            mFAB2.setVisibility(View.GONE);
-
-        } else if (mActive.equals("true")) {
-            mFAB1.setVisibility(View.GONE);
-            mFAB2.setVisibility(View.VISIBLE);
+        if (!mActive) {
+            mStar.setIcon(R.drawable.ic_notifications_off_grey600_24dp);
+        } else if (mActive) {
+            mStar.setIcon(R.drawable.ic_notifications_on_white_24dp);
         }
 
         // Setup repeat switch
         if (mRepeat.equals("false")) {
             mRepeatSwitch.setChecked(false);
             mRepeatText.setText(R.string.repeat_off);
+            mRepeatNum.setVisibility(View.GONE);
+            mRepeatTyp.setVisibility(View.GONE);
 
         } else if (mRepeat.equals("true")) {
             mRepeatSwitch.setChecked(true);
+            mRepeatNum.setVisibility(View.VISIBLE);
+            mRepeatTyp.setVisibility(View.VISIBLE);
         }
 
         // Obtain Date and Time details
@@ -224,7 +229,7 @@ public class ReminderEditActivity extends AppCompatActivity implements
         outState.putCharSequence(KEY_REPEAT, mRepeatText.getText());
         outState.putCharSequence(KEY_REPEAT_NO, mRepeatNoText.getText());
         outState.putCharSequence(KEY_REPEAT_TYPE, mRepeatTypeText.getText());
-        outState.putCharSequence(KEY_ACTIVE, mActive);
+        outState.putCharSequence(KEY_ACTIVE, Boolean.toString(mActive));
     }
 
     @Override
@@ -281,21 +286,14 @@ public class ReminderEditActivity extends AppCompatActivity implements
     }
 
     // On clicking the active button
-    public void selectFab1(View v) {
-        mFAB1 = (FloatingActionButton) findViewById(R.id.starred1);
-        mFAB1.setVisibility(View.GONE);
-        mFAB2 = (FloatingActionButton) findViewById(R.id.starred2);
-        mFAB2.setVisibility(View.VISIBLE);
-        mActive = "true";
-    }
-
-    // On clicking the inactive button
-    public void selectFab2(View v) {
-        mFAB2 = (FloatingActionButton) findViewById(R.id.starred2);
-        mFAB2.setVisibility(View.GONE);
-        mFAB1 = (FloatingActionButton) findViewById(R.id.starred1);
-        mFAB1.setVisibility(View.VISIBLE);
-        mActive = "false";
+    public void selectStarred(View v) {
+        mStar = (FloatingActionButton) findViewById(R.id.starred);
+        mActive = !mActive;
+        if (!mActive) {
+            mStar.setIcon(R.drawable.ic_notifications_off_grey600_24dp);
+        } else if (mActive) {
+            mStar.setIcon(R.drawable.ic_notifications_on_white_24dp);
+        }
     }
 
     // On clicking the repeat switch
@@ -304,10 +302,14 @@ public class ReminderEditActivity extends AppCompatActivity implements
         if (on) {
             mRepeat = "true";
             mRepeatText.setText("Every " + mRepeatNo + " " + mRepeatType + "(s)");
+            mRepeatNum.setVisibility(View.VISIBLE);
+            mRepeatTyp.setVisibility(View.VISIBLE);
 
         } else {
             mRepeat = "false";
             mRepeatText.setText(R.string.repeat_off);
+            mRepeatNum.setVisibility(View.GONE);
+            mRepeatTyp.setVisibility(View.GONE);
         }
     }
 
@@ -409,7 +411,7 @@ public class ReminderEditActivity extends AppCompatActivity implements
         }
 
         // Create a new notification
-        if (mActive.equals("true")) {
+        if (mActive) {
             if (mRepeat.equals("true")) {
                 mAlarmReceiver.setRepeatAlarm(getApplicationContext(), mCalendar, mReceivedID, mRepeatTime);
             } else if (mRepeat.equals("false")) {

@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Class to compare date and time so that items are sorted in ascending order
         public class DateTimeComparator implements Comparator {
-            DateFormat f = new SimpleDateFormat("dd/mm/yyyy hh:mm");
+            DateFormat f = new SimpleDateFormat("mm/dd/yyyy hh:mm");
 
             public int compare(Object a, Object b) {
                 String o1 = ((DateTimeSorter)a).getDateTime();
