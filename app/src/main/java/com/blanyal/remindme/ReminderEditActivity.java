@@ -31,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,8 @@ public class ReminderEditActivity extends AppCompatActivity implements
     private EditText mTitleText;
     private TextView mDateText, mTimeText, mRepeatText, mRepeatNoText, mRepeatTypeText;
     private FloatingActionButton mStar;
+    private RelativeLayout mRepeatNum;
+    private RelativeLayout mRepeatTyp;
     private Switch mRepeatSwitch;
     private String mTitle;
     private String mTime;
@@ -104,6 +107,8 @@ public class ReminderEditActivity extends AppCompatActivity implements
         mRepeatTypeText = (TextView) findViewById(R.id.set_repeat_type);
         mStar = (FloatingActionButton) findViewById(R.id.starred);
         mRepeatSwitch = (Switch) findViewById(R.id.repeat_switch);
+        mRepeatNum = (RelativeLayout) findViewById(R.id.RepeatNo);
+        mRepeatTyp = (RelativeLayout) findViewById(R.id.RepeatType);
 
         // Setup Toolbar
         setSupportActionBar(mToolbar);
@@ -190,9 +195,13 @@ public class ReminderEditActivity extends AppCompatActivity implements
         if (mRepeat.equals("false")) {
             mRepeatSwitch.setChecked(false);
             mRepeatText.setText(R.string.repeat_off);
+            mRepeatNum.setVisibility(View.GONE);
+            mRepeatTyp.setVisibility(View.GONE);
 
         } else if (mRepeat.equals("true")) {
             mRepeatSwitch.setChecked(true);
+            mRepeatNum.setVisibility(View.VISIBLE);
+            mRepeatTyp.setVisibility(View.VISIBLE);
         }
 
         // Obtain Date and Time details
@@ -293,10 +302,14 @@ public class ReminderEditActivity extends AppCompatActivity implements
         if (on) {
             mRepeat = "true";
             mRepeatText.setText("Every " + mRepeatNo + " " + mRepeatType + "(s)");
+            mRepeatNum.setVisibility(View.VISIBLE);
+            mRepeatTyp.setVisibility(View.VISIBLE);
 
         } else {
             mRepeat = "false";
             mRepeatText.setText(R.string.repeat_off);
+            mRepeatNum.setVisibility(View.GONE);
+            mRepeatTyp.setVisibility(View.GONE);
         }
     }
 

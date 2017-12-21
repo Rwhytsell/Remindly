@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +61,8 @@ public class ReminderAddActivity extends AppCompatActivity implements
     private String mRepeatNo;
     private String mRepeatType;
     private Boolean mActive;
+    private RelativeLayout mRepeatNum;
+    private RelativeLayout mRepeatTyp;
 
     // Values for orientation change
     private static final String KEY_TITLE = "title_key";
@@ -88,6 +91,8 @@ public class ReminderAddActivity extends AppCompatActivity implements
         mTitleText = (EditText) findViewById(R.id.reminder_title);
         mDateText = (TextView) findViewById(R.id.set_date);
         mTimeText = (TextView) findViewById(R.id.set_time);
+        mRepeatNum = (RelativeLayout) findViewById(R.id.RepeatNo);
+        mRepeatTyp = (RelativeLayout) findViewById(R.id.RepeatType);
         mRepeatText = (TextView) findViewById(R.id.set_repeat);
         mRepeatNoText = (TextView) findViewById(R.id.set_repeat_no);
         mRepeatTypeText = (TextView) findViewById(R.id.set_repeat_type);
@@ -256,9 +261,13 @@ public class ReminderAddActivity extends AppCompatActivity implements
         boolean on = ((Switch) view).isChecked();
         if (on) {
             mRepeat = "true";
+            mRepeatNum.setVisibility(View.VISIBLE);
+            mRepeatTyp.setVisibility(View.VISIBLE);
             mRepeatText.setText("Every " + mRepeatNo + " " + mRepeatType + "(s)");
         } else {
             mRepeat = "false";
+            mRepeatNum.setVisibility(View.GONE);
+            mRepeatTyp.setVisibility(View.GONE);
             mRepeatText.setText(R.string.repeat_off);
         }
     }
