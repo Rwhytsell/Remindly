@@ -29,6 +29,17 @@ public class Reminder {
     private String mActive;
 
 
+    public Reminder(int ID, String Title, String Date, String Time, String Repeat, String RepeatNo, String RepeatType, Boolean Active){
+        mID = ID;
+        mTitle = Title;
+        mDate = Date;
+        mTime = Time;
+        mRepeat = Repeat;
+        mRepeatNo = RepeatNo;
+        mRepeatType = RepeatType;
+        mActive = Boolean.toString(Active);
+    }
+
     public Reminder(int ID, String Title, String Date, String Time, String Repeat, String RepeatNo, String RepeatType, String Active){
         mID = ID;
         mTitle = Title;
@@ -40,14 +51,14 @@ public class Reminder {
         mActive = Active;
     }
 
-    public Reminder(String Title, String Date, String Time, String Repeat, String RepeatNo, String RepeatType, String Active){
+    public Reminder(String Title, String Date, String Time, String Repeat, String RepeatNo, String RepeatType, Boolean Active){
         mTitle = Title;
         mDate = Date;
         mTime = Time;
         mRepeat = Repeat;
         mRepeatNo = RepeatNo;
         mRepeatType = RepeatType;
-        mActive = Active;
+        mActive = Boolean.toString(Active);
     }
 
     public Reminder(){}
@@ -112,7 +123,9 @@ public class Reminder {
         return mActive;
     }
 
-    public void setActive(String active) {
-        mActive = active;
+    public void setActive(Boolean active) {
+        mActive = Boolean.toString(active);
     }
+
+    public void setActive(String active) { mActive = active;}
 }

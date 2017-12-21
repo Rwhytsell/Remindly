@@ -19,6 +19,7 @@ package com.blanyal.remindme;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -48,8 +49,7 @@ public class ReminderAddActivity extends AppCompatActivity implements
     private Toolbar mToolbar;
     private EditText mTitleText;
     private TextView mDateText, mTimeText, mRepeatText, mRepeatNoText, mRepeatTypeText;
-    private FloatingActionButton mFAB1;
-    private FloatingActionButton mFAB2;
+    private FloatingActionButton mStar;
     private Calendar mCalendar;
     private int mYear, mMonth, mHour, mMinute, mDay;
     private long mRepeatTime;
@@ -59,7 +59,7 @@ public class ReminderAddActivity extends AppCompatActivity implements
     private String mRepeat;
     private String mRepeatNo;
     private String mRepeatType;
-    private String mActive;
+    private Boolean mActive;
 
     // Values for orientation change
     private static final String KEY_TITLE = "title_key";
@@ -91,8 +91,8 @@ public class ReminderAddActivity extends AppCompatActivity implements
         mRepeatText = (TextView) findViewById(R.id.set_repeat);
         mRepeatNoText = (TextView) findViewById(R.id.set_repeat_no);
         mRepeatTypeText = (TextView) findViewById(R.id.set_repeat_type);
-        mFAB1 = (FloatingActionButton) findViewById(R.id.starred1);
-        mFAB2 = (FloatingActionButton) findViewById(R.id.starred2);
+        mStar = (FloatingActionButton) findViewById(R.id.starred);
+
 
         // Setup Toolbar
         setSupportActionBar(mToolbar);
@@ -101,7 +101,7 @@ public class ReminderAddActivity extends AppCompatActivity implements
         getSupportActionBar().setHomeButtonEnabled(true);
 
         // Initialize default values
-        mActive = "true";
+        mActive = true;
         mRepeat = "true";
         mRepeatNo = Integer.toString(1);
         mRepeatType = "Hour";
@@ -165,17 +165,14 @@ public class ReminderAddActivity extends AppCompatActivity implements
             mRepeatTypeText.setText(savedRepeatType);
             mRepeatType = savedRepeatType;
 
-            mActive = savedInstanceState.getString(KEY_ACTIVE);
+            mActive = Boolean.valueOf(savedInstanceState.getString(KEY_ACTIVE));
         }
 
         // Setup up active buttons
-        if (mActive.equals("false")) {
-            mFAB1.setVisibility(View.VISIBLE);
-            mFAB2.setVisibility(View.GONE);
-
-        } else if (mActive.equals("true")) {
-            mFAB1.setVisibility(View.GONE);
-            mFAB2.setVisibility(View.VISIBLE);
+        if (!mActive) {
+            mStar.setIcon(R.drawable.ic_notifications_off_grey600_24dp);
+        } else if (mActive) {
+            mStar.setIcon(R.drawable.ic_notifications_on_white_24dp);
         }
     }
 
@@ -190,7 +187,7 @@ public class ReminderAddActivity extends AppCompatActivity implements
         outState.putCharSequence(KEY_REPEAT, mRepeatText.getText());
         outState.putCharSequence(KEY_REPEAT_NO, mRepeatNoText.getText());
         outState.putCharSequence(KEY_REPEAT_TYPE, mRepeatTypeText.getText());
-        outState.putCharSequence(KEY_ACTIVE, mActive);
+        outState.putCharSequence(KEY_ACTIVE, Boolean.toString(mActive));
     }
 
     // On clicking Time picker
@@ -243,21 +240,15 @@ public class ReminderAddActivity extends AppCompatActivity implements
     }
 
     // On clicking the active button
-    public void selectFab1(View v) {
-        mFAB1 = (FloatingActionButton) findViewById(R.id.starred1);
-        mFAB1.setVisibility(View.GONE);
-        mFAB2 = (FloatingActionButton) findViewById(R.id.starred2);
-        mFAB2.setVisibility(View.VISIBLE);
-        mActive = "true";
-    }
+    public void selectStarred(View v) {
+        mStar = (FloatingActionButton) findViewById(R.id.starred);
+        mActive = !mActive;
 
-    // On clicking the inactive button
-    public void selectFab2(View v) {
-        mFAB2 = (FloatingActionButton) findViewById(R.id.starred2);
-        mFAB2.setVisibility(View.GONE);
-        mFAB1 = (FloatingActionButton) findViewById(R.id.starred1);
-        mFAB1.setVisibility(View.VISIBLE);
-        mActive = "false";
+        if (!mActive) {
+            mStar.setIcon(R.drawable.ic_notifications_off_grey600_24dp);
+        } else if (mActive) {
+            mStar.setIcon(R.drawable.ic_notifications_on_white_24dp);
+        }
     }
 
     // On clicking the repeat switch
@@ -360,7 +351,7 @@ public class ReminderAddActivity extends AppCompatActivity implements
         }
 
         // Create a new notification
-        if (mActive.equals("true")) {
+        if (mActive) {
             if (mRepeat.equals("true")) {
                 new AlarmReceiver().setRepeatAlarm(getApplicationContext(), mCalendar, ID, mRepeatTime);
             } else if (mRepeat.equals("false")) {

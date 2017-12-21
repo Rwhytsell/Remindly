@@ -59,7 +59,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                 .setContentTitle(context.getResources().getString(R.string.app_name))
                 .setTicker(mTitle)
                 .setContentText(mTitle)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)) //TODO Custom ringtones
                 .setContentIntent(mClick)
                 .setAutoCancel(true)
                 .setOnlyAlertOnce(true);
