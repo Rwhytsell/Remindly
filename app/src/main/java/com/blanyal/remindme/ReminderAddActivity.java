@@ -240,7 +240,7 @@ public class ReminderAddActivity extends AppCompatActivity implements
         mDay = dayOfMonth;
         mMonth = monthOfYear;
         mYear = year;
-        mDate = dayOfMonth + "/" + monthOfYear + "/" + year;
+        mDate =  monthOfYear + "/" + dayOfMonth + "/" + year;
         mDateText.setText(mDate);
     }
 
